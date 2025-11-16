@@ -40,6 +40,7 @@ body {
 #loading-screen.hidden {
     opacity: 0;
     pointer-events: none;
+    display: none !important;
 }
 
 /* Glitch Effect for Title */

@@ -83,6 +83,7 @@ function create() {
 
     // Create UI
     ui = new UI(this);
+    console.log('✅ UI created, menu visible:', ui.menuContainer.visible);
 
     // Setup debug
     setupDebug.call(this);
@@ -491,10 +492,8 @@ function updateFPS() {
 function hideLoadingScreen() {
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) {
-        loadingScreen.classList.add('hidden');
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-        }, 500);
+        loadingScreen.style.display = 'none';
+        console.log('✅ Loading screen hidden');
     }
 }
 
