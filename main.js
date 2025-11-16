@@ -30,7 +30,8 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
-      devTools: true // Can be disabled in production
+      devTools: true,
+      webSecurity: false // Allow loading Phaser from CDN
     },
     icon: path.join(__dirname, 'build', 'icon.png')
   });
@@ -46,8 +47,13 @@ function createWindow() {
     mainWindow = null;
   });
 
-  // Open DevTools in development (remove for production)
-  // mainWindow.webContents.openDevTools();
+  // Log console messages from renderer
+  mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
+    console.log(`[Renderer] ${message}`);
+  });
+
+  // Open DevTools automatically in development
+  mainWindow.webContents.openDevTools();
 }
 
 /**

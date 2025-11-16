@@ -57,17 +57,21 @@ let fpsText;
  * Preload assets
  */
 function preload() {
+    console.log('🎮 Preload started...');
     // Preload audio (gracefully handles missing files)
     audioManager = new AudioManager(this);
     audioManager.preloadAudio();
+    console.log('✅ Preload complete');
 }
 
 /**
  * Create game
  */
 function create() {
+    console.log('🎮 Create started...');
     // Initialize audio system
     audioManager.init();
+    console.log('✅ Audio manager initialized');
 
     // Create particle system
     particleSystem = new ParticleSystem(this);
@@ -499,5 +503,13 @@ function hideLoadingScreen() {
 
 // Initialize game when DOM is ready
 window.addEventListener('load', () => {
+    // Check if Phaser loaded
+    if (typeof Phaser === 'undefined') {
+        console.error('❌ CRITICAL: Phaser failed to load from CDN!');
+        document.body.innerHTML = '<div style="color: red; padding: 50px; font-family: monospace;"><h1>ERROR: Phaser failed to load</h1><p>The game engine could not be loaded. Please check your internet connection or try again.</p></div>';
+        return;
+    }
+
+    console.log('✅ Phaser loaded successfully:', Phaser.VERSION);
     game = new Phaser.Game(config);
 });
