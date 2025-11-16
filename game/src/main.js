@@ -31,6 +31,7 @@ let obstacleManager;
 let eraManager;
 let particleSystem;
 let audioManager;
+let screenEffects;
 let ui;
 
 // Game state
@@ -85,8 +86,12 @@ function create() {
         obstacleManager = new ObstacleManager(this, player, particleSystem, audioManager);
         console.log('✅ Obstacle manager created');
 
+        // Create screen effects FIRST (so era manager can use it)
+        screenEffects = new ScreenEffects(this);
+        console.log('✅ Screen effects created');
+
         // Create era manager
-        eraManager = new EraManager(this, player, obstacleManager, particleSystem, audioManager);
+        eraManager = new EraManager(this, player, obstacleManager, particleSystem, audioManager, screenEffects);
         console.log('✅ Era manager created');
 
         // Create UI
@@ -189,6 +194,9 @@ function updateGameplay(delta) {
 
     // Update era manager
     eraManager.update(delta);
+
+    // Update screen effects
+    screenEffects.update(delta);
 
     // Update particles
     particleSystem.update(delta);
