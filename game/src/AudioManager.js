@@ -72,50 +72,17 @@ class AudioManager {
      */
     init() {
         console.log('🎵 AudioManager: Initializing...');
+        console.log('   🔇 Music disabled - game runs with procedural SFX only');
+        console.log('   ℹ️  Music support will be added in future update');
+
+        // Mark all tracks as not loaded
+        Object.keys(this.tracksLoaded).forEach(key => {
+            this.tracksLoaded[key] = false;
+        });
 
         // Create procedural sound effects (always work, even without files)
         this.createProceduralSFX();
         console.log('✅ AudioManager: Procedural SFX ready');
-
-        // Try to load audio files asynchronously (won't block game)
-        this.loadAudioAsync();
-    }
-
-    /**
-     * Load audio files asynchronously after game has started
-     * This prevents blocking the game initialization
-     */
-    loadAudioAsync() {
-        console.log('🎵 Attempting to load audio files asynchronously...');
-
-        const audioFiles = [
-            { key: 'menu', path: 'assets/audio/menu.mp3' },
-            { key: 'era_8bit', path: 'assets/audio/era_8bit.mp3' },
-            { key: 'era_16bit', path: 'assets/audio/era_16bit.mp3' },
-            { key: 'era_neon', path: 'assets/audio/era_neon.mp3' }
-        ];
-
-        // Load each file asynchronously
-        audioFiles.forEach(file => {
-            this.scene.load.audio(file.key, file.path);
-        });
-
-        // Listen for successful loads
-        this.scene.load.on('filecomplete-audio', (key) => {
-            this.tracksLoaded[key] = true;
-            console.log(`✅ Audio loaded: ${key}`);
-        });
-
-        // Listen for errors
-        this.scene.load.on('loaderror', (fileObj) => {
-            if (fileObj.type === 'audio') {
-                console.log(`🔇 Audio file not found: ${fileObj.key}`);
-                this.tracksLoaded[fileObj.key] = false;
-            }
-        });
-
-        // Start the loader (won't block since game is already running)
-        this.scene.load.start();
     }
 
     /**
