@@ -87,11 +87,13 @@ function create() {
     // Setup debug
     setupDebug.call(this);
 
-    // Setup touch controls for mobile
-    setupTouchControls.call(this);
-
     // Setup pause
     setupPause.call(this);
+
+    // Setup Electron integration (if running in Electron)
+    if (window.electronAPI) {
+        setupElectronIntegration.call(this);
+    }
 
     // Play menu music
     audioManager.playTrack('menu', true);
@@ -283,71 +285,59 @@ function togglePause() {
 }
 
 /**
- * Setup touch controls for mobile
+ * Setup Electron integration (desktop app features)
  */
-function setupTouchControls() {
-    // Left half: Jump
-    const leftTouch = this.add.rectangle(0, 0, 640, 720, 0x000000, 0);
-    leftTouch.setOrigin(0, 0);
-    leftTouch.setDepth(-1000); // BEHIND everything else
-    leftTouch.setInteractive();
+function setupElectronIntegration() {
+    console.log('🖥️ Running in Electron desktop mode');
 
-    leftTouch.on('pointerdown', () => {
-        if (gameState === 'playing' && !isPaused) {
-            player.jump();
+    // Listen for menu commands from Electron
+    window.electronAPI.onNewGame(() => {
+        if (gameState === 'menu') {
+            startGame();
+        } else if (gameState === 'gameover') {
+            restartGame();
         }
     });
 
-    // Right half: Slide
-    const rightTouch = this.add.rectangle(640, 0, 640, 720, 0x000000, 0);
-    rightTouch.setOrigin(0, 0);
-    rightTouch.setDepth(-1000); // BEHIND everything else
-    rightTouch.setInteractive();
-
-    let isSliding = false;
-    rightTouch.on('pointerdown', () => {
-        if (gameState === 'playing' && !isPaused) {
-            player.startSlide();
-            isSliding = true;
+    window.electronAPI.onTogglePause(() => {
+        if (gameState === 'playing') {
+            togglePause.call(this);
         }
     });
 
-    rightTouch.on('pointerup', () => {
-        if (isSliding) {
-            player.endSlide();
-            isSliding = false;
+    window.electronAPI.onToggleAudio(() => {
+        audioManager.toggleAudio();
+    });
+
+    window.electronAPI.onToggleHitboxes(() => {
+        debugMode.showHitboxes = !debugMode.showHitboxes;
+    });
+
+    window.electronAPI.onToggleFPS(() => {
+        debugMode.showFPS = !debugMode.showFPS;
+        if (debugMode.showFPS && !fpsText) {
+            fpsText = this.add.text(10, 10, 'FPS: 60', {
+                fontSize: '16px',
+                fontFamily: 'Courier New, monospace',
+                color: '#00ff00',
+                backgroundColor: '#000000'
+            });
+        }
+        if (fpsText) {
+            fpsText.setVisible(debugMode.showFPS);
         }
     });
 
-    rightTouch.on('pointerout', () => {
-        if (isSliding) {
-            player.endSlide();
-            isSliding = false;
+    window.electronAPI.onToggleInvincibility(() => {
+        debugMode.invincibility = !debugMode.invincibility;
+        console.log('Invincibility:', debugMode.invincibility);
+    });
+
+    window.electronAPI.onShowHelp(() => {
+        if (ui && ui.showHowToPlay) {
+            ui.showHowToPlay();
         }
     });
-
-    // Add touch indicators
-    const leftIndicator = this.add.text(160, 650, '👆 TAP TO JUMP', {
-        fontSize: '20px',
-        fontFamily: 'Courier New, monospace',
-        color: '#666666'
-    });
-    leftIndicator.setOrigin(0.5);
-    leftIndicator.setAlpha(0.5);
-
-    const rightIndicator = this.add.text(1120, 650, '👆 TAP TO SLIDE', {
-        fontSize: '20px',
-        fontFamily: 'Courier New, monospace',
-        color: '#666666'
-    });
-    rightIndicator.setOrigin(0.5);
-    rightIndicator.setAlpha(0.5);
-
-    // Hide on desktop
-    if (!this.sys.game.device.os.android && !this.sys.game.device.os.iOS) {
-        leftIndicator.setVisible(false);
-        rightIndicator.setVisible(false);
-    }
 }
 
 /**
