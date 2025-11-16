@@ -47,6 +47,7 @@ class ParticleSystem {
             graphics.fillRect(0, 0, 4, 4); // 4x4 pixel blocks
 
             const particle = this.scene.add.container(x, y, [graphics]);
+            particle.setDepth(80); // Above obstacles (50) but below player (100)
 
             const angle = Phaser.Math.Between(0, 360);
             const speed = Phaser.Math.Between(50, 150);
@@ -74,6 +75,7 @@ class ParticleSystem {
             graphics.fillCircle(0, 0, 2);
 
             const particle = this.scene.add.container(x, y, [graphics]);
+            particle.setDepth(80); // Above obstacles (50) but below player (100)
 
             const angle = Phaser.Math.Between(0, 360);
             const speed = Phaser.Math.Between(80, 200);
@@ -105,6 +107,7 @@ class ParticleSystem {
             graphics.strokeCircle(0, 0, 6);
 
             const particle = this.scene.add.container(x, y, [graphics]);
+            particle.setDepth(80); // Above obstacles (50) but below player (100)
 
             const angle = Phaser.Math.Between(0, 360);
             const speed = Phaser.Math.Between(100, 250);
@@ -146,6 +149,7 @@ class ParticleSystem {
         }
 
         const particle = this.scene.add.container(x, y, [graphics]);
+        particle.setDepth(80); // Above obstacles (50) but below player (100)
         particle.velocityX = 0;
         particle.velocityY = 0;
         particle.life = 0.3;
@@ -181,6 +185,7 @@ class ParticleSystem {
             }
 
             const particle = this.scene.add.container(x, y, [graphics]);
+            particle.setDepth(80); // Above obstacles (50) but below player (100)
 
             const angle = (360 / particleCount) * i;
             const speed = Phaser.Math.Between(200, 400);

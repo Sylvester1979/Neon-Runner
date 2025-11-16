@@ -184,6 +184,7 @@ class ObstacleManager {
 
         // Create container
         const container = this.scene.add.container(obstacle.x, obstacle.y);
+        container.setDepth(50); // ABOVE backgrounds (0-20) but BELOW player (100)
         container.add(graphics);
         obstacle.container = container;
 
