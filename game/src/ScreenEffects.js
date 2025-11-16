@@ -6,9 +6,9 @@ class ScreenEffects {
         this.scene = scene;
         this.currentEra = '8bit';
 
-        // Create effects layer (drawn on top of everything except UI)
+        // Create effects layer (subtle background atmospheric effects)
         this.effectsGraphics = scene.add.graphics();
-        this.effectsGraphics.setDepth(500); // Above player/obstacles, below UI
+        this.effectsGraphics.setDepth(5); // Behind player/obstacles for subtle effect
 
         // Animation timer
         this.time = 0;
@@ -165,14 +165,14 @@ class ScreenEffects {
         for (let i = 0; i < steps; i++) {
             const progress = i / steps;
             const inset = (1 - progress) * 200;
-            const alpha = progress * progress * 0.35; // Quadratic falloff
+            const alpha = progress * progress * 0.15; // Quadratic falloff - reduced for better visibility
 
             g.fillStyle(0x000000, alpha);
             g.fillRect(inset, inset, 1280 - inset * 2, 720 - inset * 2);
         }
 
-        // Extra darkness at corners
-        g.fillStyle(0x000000, 0.25);
+        // Extra darkness at corners - reduced for better visibility
+        g.fillStyle(0x000000, 0.08);
         // Top-left
         g.fillTriangle(0, 0, 150, 0, 0, 150);
         // Top-right

@@ -332,13 +332,13 @@ class Player {
         const frame = this.animationFrame;
         const pulse = Math.sin(Date.now() / 150) * 0.3 + 0.7;
 
-        // Outermost glow aura
-        this.graphics.fillStyle(0x00FFFF, 0.1 * pulse);
-        this.graphics.fillRect(-width/2 - 6, -height/2 - 6, width + 12, height * 0.55 + 12);
+        // Outermost glow aura - reduced for better obstacle visibility
+        this.graphics.fillStyle(0x00FFFF, 0.08 * pulse);
+        this.graphics.fillRect(-width/2 - 3, -height/2 - 3, width + 6, height * 0.55 + 6);
 
         // Secondary glow layer
-        this.graphics.fillStyle(0xFF00FF, 0.15 * pulse);
-        this.graphics.fillRect(-width/2, -height/2, width, height * 0.55 + 6);
+        this.graphics.fillStyle(0xFF00FF, 0.12 * pulse);
+        this.graphics.fillRect(-width/2 - 1, -height/2 - 1, width + 2, height * 0.55 + 3);
 
         // Main body (sleek design)
         this.graphics.fillStyle(0x0a0a1a, 1);
@@ -358,22 +358,22 @@ class Player {
         this.graphics.lineStyle(1, 0xFF00FF, 1);
         this.graphics.strokeRect(-width/2 + 7, -height/2 + 7, width - 14, height * 0.55 - 2);
 
-        // Head with intense multi-layer glow
-        this.graphics.fillStyle(0x00FFFF, 0.2);
-        this.graphics.fillCircle(0, -height/2 - 8, 20);
+        // Head with multi-layer glow - reduced for better obstacle visibility
+        this.graphics.fillStyle(0x00FFFF, 0.15);
+        this.graphics.fillCircle(0, -height/2 - 8, 14);
 
-        this.graphics.fillStyle(0x00FFFF, 0.4);
-        this.graphics.fillCircle(0, -height/2 - 8, 16);
+        this.graphics.fillStyle(0x00FFFF, 0.35);
+        this.graphics.fillCircle(0, -height/2 - 8, 11);
 
         this.graphics.fillStyle(0x00FFFF, 0.9);
-        this.graphics.fillCircle(0, -height/2 - 8, 12);
+        this.graphics.fillCircle(0, -height/2 - 8, 9);
 
         // Head outline glow
-        this.graphics.lineStyle(2, 0xFF00FF, 0.9);
-        this.graphics.strokeCircle(0, -height/2 - 8, 14);
+        this.graphics.lineStyle(2, 0xFF00FF, 0.8);
+        this.graphics.strokeCircle(0, -height/2 - 8, 10);
 
-        this.graphics.lineStyle(1, 0xFF00FF, 0.4);
-        this.graphics.strokeCircle(0, -height/2 - 8, 17);
+        this.graphics.lineStyle(1, 0xFF00FF, 0.3);
+        this.graphics.strokeCircle(0, -height/2 - 8, 12);
 
         // Visor with glow
         this.graphics.fillStyle(0xFF00FF, 0.9);
@@ -381,27 +381,27 @@ class Player {
         this.graphics.fillStyle(0xFF00FF, 0.3);
         this.graphics.fillRect(-12, -height/2 - 11, 24, 7);
 
-        // Animated energy trails (multiple layers)
-        const trailLength = Math.sin(frame * Math.PI / 4) * 12 + 18;
+        // Animated energy trails - reduced for better obstacle visibility
+        const trailLength = Math.sin(frame * Math.PI / 4) * 5 + 10;
 
         // Trail glow
-        this.graphics.lineStyle(6, 0xFF00FF, 0.2);
+        this.graphics.lineStyle(4, 0xFF00FF, 0.15);
         this.graphics.lineBetween(-width/2, 0, -width/2 - trailLength, 0);
-        this.graphics.lineStyle(4, 0x00FFFF, 0.2);
+        this.graphics.lineStyle(3, 0x00FFFF, 0.15);
         this.graphics.lineBetween(-width/2, height/4, -width/2 - trailLength * 0.8, height/4);
 
         // Trail solid
-        this.graphics.lineStyle(2, 0xFF00FF, 0.8);
+        this.graphics.lineStyle(2, 0xFF00FF, 0.7);
         this.graphics.lineBetween(-width/2, 0, -width/2 - trailLength, 0);
-        this.graphics.lineStyle(2, 0x00FFFF, 0.8);
+        this.graphics.lineStyle(2, 0x00FFFF, 0.7);
         this.graphics.lineBetween(-width/2, height/4, -width/2 - trailLength * 0.8, height/4);
 
-        // Energy particles trailing
-        for (let i = 0; i < 3; i++) {
-            const px = -width/2 - i * 8 - (frame % 4) * 3;
-            const py = i * 6;
-            this.graphics.fillStyle(i % 2 === 0 ? 0x00FFFF : 0xFF00FF, 0.6);
-            this.graphics.fillCircle(px, py, 2);
+        // Energy particles trailing - reduced spacing
+        for (let i = 0; i < 2; i++) {
+            const px = -width/2 - i * 6 - (frame % 4) * 2;
+            const py = i * 5;
+            this.graphics.fillStyle(i % 2 === 0 ? 0x00FFFF : 0xFF00FF, 0.5);
+            this.graphics.fillCircle(px, py, 1.5);
         }
 
         // Legs (smooth animation) with intense glow
@@ -429,13 +429,13 @@ class Player {
             this.graphics.lineBetween(6, height * 0.35, 6 + legSwing, height * 0.65);
         }
 
-        // Speed lines for extra motion
+        // Speed lines - reduced for better obstacle visibility
         if (!this.isSliding) {
-            this.graphics.lineStyle(1, 0x00FFFF, 0.3);
-            for (let i = 0; i < 4; i++) {
-                const sx = -width/2 - 10 - i * 6;
-                const sy = -height/4 + i * 8;
-                this.graphics.lineBetween(sx, sy, sx - 15, sy);
+            this.graphics.lineStyle(1, 0x00FFFF, 0.2);
+            for (let i = 0; i < 3; i++) {
+                const sx = -width/2 - 5 - i * 4;
+                const sy = -height/4 + i * 6;
+                this.graphics.lineBetween(sx, sy, sx - 8, sy);
             }
         }
     }

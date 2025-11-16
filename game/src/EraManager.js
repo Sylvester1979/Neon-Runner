@@ -25,13 +25,13 @@ class EraManager {
         this.transitionDuration = 1.5;
         this.transitionPhase = 0; // 0-5 for different visual phases
 
-        // Background layers
+        // Background layers - all behind obstacles for clear gameplay visibility
         this.backgroundGraphics = scene.add.graphics();
         this.backgroundGraphics.setDepth(0); // Furthest back
         this.midgroundGraphics = scene.add.graphics();
-        this.midgroundGraphics.setDepth(10); // Middle layer
+        this.midgroundGraphics.setDepth(2); // Middle layer
         this.foregroundGraphics = scene.add.graphics();
-        this.foregroundGraphics.setDepth(20); // Front layer but behind player
+        this.foregroundGraphics.setDepth(4); // Front background layer - behind screen effects
 
         // Parallax positions
         this.bgScrollX = 0;
@@ -591,18 +591,18 @@ class EraManager {
             }
         }
 
-        // Volumetric light beams from buildings
-        fg.fillStyle(0x00FFFF, 0.08);
+        // Volumetric light beams from buildings - moved to background for better obstacle visibility
+        g.fillStyle(0x00FFFF, 0.05);
         for (let i = 0; i < 7; i++) {
             const bx = (i * 180 + this.animationTimer * 15) % 1280;
             const wave = Math.sin(this.animationTimer + i) * 10;
-            fg.fillTriangle(bx + wave, 200, bx - 60, 720, bx + 60, 720);
+            g.fillTriangle(bx + wave, 200, bx - 60, 720, bx + 60, 720);
         }
 
-        fg.fillStyle(0xFF00FF, 0.08);
+        g.fillStyle(0xFF00FF, 0.05);
         for (let i = 0; i < 6; i++) {
             const bx = (i * 200 + 100 + this.animationTimer * 12) % 1280;
-            fg.fillTriangle(bx, 250, bx - 50, 720, bx + 50, 720);
+            g.fillTriangle(bx, 250, bx - 50, 720, bx + 50, 720);
         }
 
         // Intense ground edge glow
@@ -611,16 +611,16 @@ class EraManager {
         fg.lineStyle(3, 0x00FFFF, 0.8);
         fg.lineBetween(0, 601, 1280, 601);
 
-        // Glowing particles floating above ground
+        // Glowing particles floating above ground - moved to midground for better obstacle visibility
         for (let i = 0; i < 20; i++) {
-            const px = (i * 70 + this.fgScrollX * 1.5) % 1400 - 100;
+            const px = (i * 70 + this.mgScrollX * 1.3) % 1400 - 100;
             const py = 550 + Math.sin(this.animationTimer * 2 + i) * 30;
             const pGlow = Math.sin(this.animationTimer * 4 + i) * 0.5 + 0.5;
             const pColor = i % 2 === 0 ? 0x00FFFF : 0xFF00FF;
-            fg.fillStyle(pColor, pGlow * 0.7);
-            fg.fillCircle(px, py, 3);
-            fg.fillStyle(pColor, pGlow * 0.2);
-            fg.fillCircle(px, py, 8);
+            mg.fillStyle(pColor, pGlow * 0.3);
+            mg.fillCircle(px, py, 2);
+            mg.fillStyle(pColor, pGlow * 0.1);
+            mg.fillCircle(px, py, 5);
         }
     }
 

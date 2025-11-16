@@ -83,6 +83,9 @@ class ObstacleManager {
             // Update container position
             obstacle.container.x = obstacle.x;
 
+            // Update obstacle animation and graphics
+            this.updateObstacleAnimation(obstacle, delta);
+
             // Check if passed player
             if (!obstacle.passed && obstacle.x + obstacle.width < this.player.x) {
                 obstacle.passed = true;
