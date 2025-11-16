@@ -222,105 +222,353 @@ class EraManager {
     }
 
     /**
-     * Draw 8-bit era background - Enhanced retro aesthetic
+     * Draw 8-bit era background - MASSIVELY ENHANCED retro aesthetic
+     * Features: Rich building variety, animated elements, traffic, atmospheric details
      */
     draw8BitBackground() {
         const g = this.backgroundGraphics;
         const mg = this.midgroundGraphics;
         const fg = this.foregroundGraphics;
 
-        // Sky gradient (darker at top, lighter at horizon)
+        // ============================================================
+        // SKY - Enhanced 5-layer gradient for depth
+        // ============================================================
         g.fillStyle(0x081820, 1);
-        g.fillRect(0, 0, 1280, 200);
-        g.fillStyle(0x0F380F, 1);
-        g.fillRect(0, 200, 1280, 200);
-        g.fillStyle(0x306230, 1);
-        g.fillRect(0, 400, 1280, 200);
+        g.fillRect(0, 0, 1280, 120);
 
-        // Pixelated stars in background
-        for (let i = 0; i < 30; i++) {
-            const x = (i * 67) % 1280;
-            const y = (i * 43) % 300;
-            const twinkle = Math.floor(this.animationTimer * 3 + i) % 3;
-            if (twinkle === 0) {
-                g.fillStyle(0x9BBC0F, 0.8);
+        g.fillStyle(0x0a2028, 1);
+        g.fillRect(0, 120, 1280, 100);
+
+        g.fillStyle(0x0F380F, 1);
+        g.fillRect(0, 220, 1280, 100);
+
+        g.fillStyle(0x1a4a1a, 1);
+        g.fillRect(0, 320, 1280, 80);
+
+        g.fillStyle(0x306230, 1);
+        g.fillRect(0, 400, 1280, 50);
+
+        // ============================================================
+        // STARS - Multi-layer starfield with variety
+        // ============================================================
+
+        // Large bright stars
+        for (let i = 0; i < 15; i++) {
+            const x = (i * 97) % 1280;
+            const y = (i * 37) % 180;
+            const twinkle = Math.sin(this.animationTimer * 2 + i) * 0.5 + 0.5;
+            g.fillStyle(0x9BBC0F, 0.6 + twinkle * 0.4);
+            g.fillRect(x, y, 3, 3);
+            // Star cross pattern
+            g.fillRect(x - 1, y + 1, 1, 1);
+            g.fillRect(x + 3, y + 1, 1, 1);
+            g.fillRect(x + 1, y - 1, 1, 1);
+            g.fillRect(x + 1, y + 3, 1, 1);
+        }
+
+        // Medium stars
+        for (let i = 0; i < 35; i++) {
+            const x = (i * 67 + 30) % 1280;
+            const y = (i * 43) % 250;
+            const twinkle = Math.floor(this.animationTimer * 3 + i) % 4;
+            if (twinkle > 0) {
+                g.fillStyle(0x9BBC0F, 0.7);
                 g.fillRect(x, y, 2, 2);
             }
         }
 
-        // Distant mountain silhouettes
-        g.fillStyle(0x0F380F, 0.6);
-        for (let i = 0; i < 8; i++) {
-            const x = (i * 180 + this.bgScrollX * 0.3) % 1400 - 100;
-            const height = 80 + (i % 3) * 30;
-            // Triangle mountain
-            g.fillTriangle(x, 400, x + 90, 400, x + 45, 400 - height);
+        // Small stars (dense)
+        for (let i = 0; i < 50; i++) {
+            const x = (i * 53 + 60) % 1280;
+            const y = (i * 31 + 20) % 300;
+            const phase = Math.floor(this.animationTimer * 4 + i) % 6;
+            if (phase < 4) {
+                g.fillStyle(0x8BAC0F, 0.5);
+                g.fillRect(x, y, 1, 1);
+            }
         }
 
-        // Animated grid lines (perspective grid)
-        g.lineStyle(1, 0x9BBC0F, 0.4);
-        for (let i = 0; i < 15; i++) {
-            const y = 420 + i * 20;
-            const perspectiveOffset = (i / 15) * 50;
+        // ============================================================
+        // CLOUDS - Drifting pixel clouds
+        // ============================================================
+        g.fillStyle(0x0F380F, 0.4);
+        for (let i = 0; i < 6; i++) {
+            const cloudX = (i * 240 + this.bgScrollX * 0.15) % 1400 - 100;
+            const cloudY = 180 + (i % 3) * 40;
+
+            // Cloud shape
+            g.fillRect(cloudX + 10, cloudY, 30, 8);
+            g.fillRect(cloudX + 5, cloudY + 8, 40, 8);
+            g.fillRect(cloudX, cloudY + 16, 50, 8);
+            g.fillRect(cloudX + 5, cloudY + 24, 40, 8);
+            g.fillRect(cloudX + 15, cloudY + 32, 20, 4);
+        }
+
+        // ============================================================
+        // FLYING BIRDS
+        // ============================================================
+        g.fillStyle(0x081820, 0.8);
+        for (let i = 0; i < 8; i++) {
+            const birdX = (i * 190 + this.bgScrollX * 0.6 + this.animationTimer * 80) % 1400 - 100;
+            const birdY = 150 + (i % 4) * 60 + Math.sin(this.animationTimer * 2 + i) * 10;
+            const wingFlap = Math.floor(this.animationTimer * 8 + i) % 2;
+
+            // Bird body
+            g.fillRect(birdX, birdY, 4, 2);
+            // Wings
+            if (wingFlap === 0) {
+                g.fillRect(birdX - 3, birdY, 2, 1);
+                g.fillRect(birdX + 4, birdY, 2, 1);
+            } else {
+                g.fillRect(birdX - 2, birdY - 2, 2, 2);
+                g.fillRect(birdX + 4, birdY - 2, 2, 2);
+            }
+        }
+
+        // ============================================================
+        // MOUNTAINS - Varied silhouettes
+        // ============================================================
+        g.fillStyle(0x0F380F, 0.5);
+        for (let i = 0; i < 12; i++) {
+            const x = (i * 140 + this.bgScrollX * 0.25) % 1500 - 150;
+            const height = 70 + (i % 4) * 35;
+            const style = i % 3;
+
+            if (style === 0) {
+                g.fillTriangle(x, 400, x + 100, 400, x + 50, 400 - height);
+            } else if (style === 1) {
+                g.fillTriangle(x, 400, x + 60, 400, x + 30, 400 - height);
+                g.fillTriangle(x + 40, 400, x + 100, 400, x + 70, 400 - height + 15);
+            } else {
+                g.fillRect(x, 400 - height, 90, height);
+                g.fillTriangle(x, 400 - height, x + 45, 400 - height - 20, x + 90, 400 - height);
+            }
+        }
+
+        // ============================================================
+        // PERSPECTIVE GRID - Enhanced
+        // ============================================================
+        g.lineStyle(1, 0x9BBC0F, 0.35);
+        for (let i = 0; i < 18; i++) {
+            const y = 420 + i * 18;
+            const perspectiveOffset = (i / 18) * 70;
+            const alpha = 0.25 + (i / 18) * 0.25;
+            const thickness = i > 12 ? 2 : 1;
+
+            g.lineStyle(thickness, 0x9BBC0F, alpha);
             g.lineBetween(-perspectiveOffset + (this.bgScrollX * 0.5) % 100, y,
                          1280 + perspectiveOffset + (this.bgScrollX * 0.5) % 100, y);
         }
 
         // Vertical grid lines
-        for (let x = 0; x < 1400; x += 40) {
-            const scrolledX = (x + this.bgScrollX * 0.7) % 1400 - 100;
-            g.lineBetween(scrolledX, 420, scrolledX, 600);
+        g.lineStyle(1, 0x9BBC0F, 0.3);
+        for (let x = 0; x < 1500; x += 45) {
+            const scrolledX = (x + this.bgScrollX * 0.7) % 1500 - 100;
+            g.lineBetween(scrolledX, 420, scrolledX + 15, 650);
         }
 
-        // Pixelated building silhouettes (midground)
-        mg.fillStyle(0x306230, 1);
-        for (let i = 0; i < 15; i++) {
-            const x = (i * 120 + this.bgScrollX) % 1400 - 100;
-            const height = 120 + (i % 4) * 40;
-            const width = 60 + (i % 3) * 20;
-
-            // Building body
-            mg.fillRect(x, 600 - height, width, height);
-
-            // Pixelated windows
-            mg.fillStyle(0x9BBC0F, 0.6);
-            for (let wy = 20; wy < height - 10; wy += 25) {
-                for (let wx = 10; wx < width - 10; wx += 15) {
-                    if (Math.floor(this.animationTimer + i + wx) % 4 === 0) {
-                        mg.fillRect(x + wx, 600 - height + wy, 8, 8);
-                    }
+        // Grid intersection glow
+        for (let i = 0; i < 18; i += 3) {
+            for (let x = 0; x < 1500; x += 90) {
+                const scrolledX = (x + this.bgScrollX * 0.7) % 1500 - 100;
+                const y = 420 + i * 18;
+                const pulse = Math.sin(this.animationTimer * 3 + x + i) * 0.3 + 0.5;
+                if (pulse > 0.6) {
+                    g.fillStyle(0x9BBC0F, pulse * 0.4);
+                    g.fillRect(scrolledX, y, 2, 2);
                 }
             }
-            mg.fillStyle(0x306230, 1);
+        }
 
-            // Antenna on some buildings
-            if (i % 3 === 0) {
-                mg.fillRect(x + width/2 - 2, 600 - height - 15, 4, 15);
-                mg.fillStyle(0xFF0000, 0.8);
-                mg.fillRect(x + width/2 - 3, 600 - height - 18, 6, 3);
+        // ============================================================
+        // BUILDINGS - 5 different types with rich detail
+        // ============================================================
+        for (let i = 0; i < 18; i++) {
+            const x = (i * 95 + this.mgScrollX) % 1600 - 150;
+            const buildingType = i % 5;
+            const height = 140 + (i % 5) * 45;
+            const width = 55 + (i % 4) * 18;
+
+            // Building shadow
+            mg.fillStyle(0x081820, 0.3);
+            mg.fillRect(x + 3, 603 - height, width, height);
+
+            // Main building
+            mg.fillStyle(0x306230, 1);
+            mg.fillRect(x, 600 - height, width, height);
+
+            // Building outline
+            mg.lineStyle(1, 0x0F380F, 0.8);
+            mg.strokeRect(x, 600 - height, width, height);
+
+            // Type-specific details
+            if (buildingType === 0) {
+                // Office - regular windows
+                mg.fillStyle(0x9BBC0F, 0.5);
+                for (let wy = 15; wy < height - 10; wy += 20) {
+                    for (let wx = 8; wx < width - 8; wx += 12) {
+                        const lightOn = Math.floor(this.animationTimer * 2 + i + wx + wy) % 5;
+                        if (lightOn > 0) {
+                            mg.fillRect(x + wx, 600 - height + wy, 8, 12);
+                        }
+                    }
+                }
+                mg.fillStyle(0x0F380F, 1);
+                mg.fillRect(x + width * 0.3, 600 - height - 8, width * 0.4, 8);
+
+            } else if (buildingType === 1) {
+                // Apartment - balconies
+                for (let floor = 0; floor < Math.floor(height / 25); floor++) {
+                    const floorY = 600 - height + floor * 25 + 10;
+                    mg.lineStyle(1, 0x0F380F, 1);
+                    mg.lineBetween(x + 5, floorY + 5, x + width - 5, floorY + 5);
+                    mg.fillStyle(0x9BBC0F, 0.6);
+                    for (let wx = 8; wx < width - 8; wx += 16) {
+                        const lightOn = Math.floor(this.animationTimer + i + wx + floor) % 4;
+                        if (lightOn > 0) {
+                            mg.fillRect(x + wx, floorY - 8, 10, 12);
+                        }
+                    }
+                }
+                // Water tower
                 mg.fillStyle(0x306230, 1);
+                mg.fillRect(x + width * 0.35, 600 - height - 18, width * 0.3, 10);
+                mg.fillRect(x + width * 0.4, 600 - height - 24, width * 0.2, 6);
+
+            } else if (buildingType === 2) {
+                // Commercial - storefront
+                mg.fillStyle(0x9BBC0F, 0.8);
+                mg.fillRect(x + 5, 600 - 40, width - 10, 35);
+                mg.fillStyle(0x0F380F, 1);
+                mg.fillRect(x + 3, 600 - 42, width - 6, 4);
+                // Upper windows
+                mg.fillStyle(0x9BBC0F, 0.5);
+                for (let wy = 55; wy < height - 10; wy += 22) {
+                    for (let wx = 10; wx < width - 10; wx += 14) {
+                        const lightOn = Math.floor(this.animationTimer + i + wx) % 3;
+                        if (lightOn > 0) {
+                            mg.fillRect(x + wx, 600 - height + wy, 9, 14);
+                        }
+                    }
+                }
+                // Billboard
+                const signFlash = Math.floor(this.animationTimer * 4 + i) % 3;
+                if (signFlash > 0) {
+                    mg.fillStyle(0x9BBC0F, 0.9);
+                    mg.fillRect(x + width * 0.15, 600 - height - 15, width * 0.7, 12);
+                }
+
+            } else if (buildingType === 3) {
+                // Industrial - smokestack
+                mg.fillStyle(0x0F380F, 1);
+                mg.fillRect(x + width * 0.2, 600 - height - 20, 4, 20 + height * 0.3);
+                // Smoke
+                const smokePhase = Math.floor(this.animationTimer + i) % 4;
+                if (smokePhase < 2) {
+                    mg.fillStyle(0x306230, 0.3);
+                    const puffY = 600 - height - 25 - (smokePhase * 10);
+                    mg.fillRect(x + width * 0.2 - 3, puffY, 10, 8);
+                }
+                // Windows
+                mg.fillStyle(0x9BBC0F, 0.4);
+                for (let wy = 20; wy < height - 20; wy += 35) {
+                    for (let wx = 12; wx < width - 12; wx += 20) {
+                        mg.fillRect(x + wx, 600 - height + wy, 12, 20);
+                    }
+                }
+
+            } else {
+                // Mixed use - fire escape
+                mg.fillStyle(0x9BBC0F, 0.6);
+                for (let wy = 15; wy < height - 10; wy += 24) {
+                    for (let wx = 6; wx < width - 6; wx += 18) {
+                        const lightOn = Math.floor(this.animationTimer * 1.5 + i + wx) % 4;
+                        if (lightOn > 0) {
+                            mg.fillRect(x + wx, 600 - height + wy, 10, 14);
+                        }
+                    }
+                }
+                // Fire escape
+                mg.lineStyle(1, 0x0F380F, 1);
+                const escapeX = x + width - 8;
+                for (let floor = 0; floor < Math.floor(height / 30); floor++) {
+                    const floorY = 600 - height + 20 + floor * 30;
+                    mg.strokeRect(escapeX, floorY, 6, 25);
+                }
+            }
+
+            // Antenna/satellite
+            if (i % 3 === 0) {
+                mg.fillStyle(0x0F380F, 1);
+                mg.fillRect(x + width/2 - 1, 600 - height - 25, 2, 25);
+                const blink = Math.floor(this.animationTimer * 2 + i) % 2;
+                if (blink === 0) {
+                    mg.fillStyle(0xFF0000, 0.9);
+                    mg.fillRect(x + width/2 - 2, 600 - height - 27, 4, 3);
+                }
             }
         }
 
-        // Ground with detail
+        // ============================================================
+        // GROUND - Enhanced with details
+        // ============================================================
         fg.fillStyle(0x8BAC0F, 1);
         fg.fillRect(0, 600, 1280, 120);
 
-        // Ground pattern (tile effect)
+        // Ground shading
+        fg.fillStyle(0x306230, 0.15);
+        fg.fillRect(0, 600, 1280, 25);
+
+        // Street tiles
         fg.fillStyle(0x306230, 1);
-        for (let x = 0; x < 1300; x += 40) {
-            const fx = (x + this.fgScrollX) % 1300;
-            fg.fillRect(fx, 600, 38, 2);
-            fg.fillRect(fx, 610, 38, 2);
-            fg.fillRect(fx, 620, 38, 2);
+        for (let x = 0; x < 1350; x += 40) {
+            const fx = (x + this.fgScrollX) % 1350;
+            fg.fillRect(fx, 600, 2, 120);
+            fg.fillRect(fx, 600, 40, 2);
+            fg.fillRect(fx, 615, 40, 1);
+            fg.fillRect(fx, 630, 40, 1);
         }
 
         // Ground blocks
-        fg.fillStyle(0x0F380F, 0.3);
-        for (let x = 0; x < 1300; x += 40) {
-            const fx = (x + this.fgScrollX * 1.2) % 1300;
-            fg.fillRect(fx + 5, 605, 30, 110);
+        fg.fillStyle(0x0F380F, 0.25);
+        for (let x = 0; x < 1350; x += 40) {
+            const fx = (x + this.fgScrollX * 1.2) % 1350;
+            fg.fillRect(fx + 3, 603, 34, 114);
         }
+
+        // Street lamps with glow
+        fg.fillStyle(0x0F380F, 1);
+        for (let i = 0; i < 7; i++) {
+            const lampX = (i * 185 + this.fgScrollX * 0.95) % 1500 - 100;
+            fg.fillRect(lampX, 550, 3, 50);
+            fg.fillRect(lampX - 4, 545, 11, 6);
+            const glow = Math.sin(this.animationTimer * 1.5 + i) * 0.2 + 0.8;
+            fg.fillStyle(0x9BBC0F, glow * 0.4);
+            fg.fillRect(lampX - 6, 551, 15, 8);
+            fg.fillStyle(0x9BBC0F, 0.1);
+            fg.fillTriangle(lampX + 1.5, 551, lampX - 15, 600, lampX + 18, 600);
+            fg.fillStyle(0x0F380F, 1);
+        }
+
+        // Moving cars
+        for (let i = 0; i < 3; i++) {
+            const carX = (i * 420 + this.fgScrollX * 2.5 + this.animationTimer * 150) % 1600 - 100;
+            const carY = 570 + (i % 2) * 15;
+
+            fg.fillStyle(0x306230, 1);
+            fg.fillRect(carX, carY, 28, 12);
+            fg.fillRect(carX + 6, carY - 6, 16, 6);
+            fg.fillStyle(0x081820, 1);
+            fg.fillRect(carX + 4, carY + 10, 4, 3);
+            fg.fillRect(carX + 20, carY + 10, 4, 3);
+            fg.fillStyle(0x9BBC0F, 0.7);
+            fg.fillRect(carX + 26, carY + 2, 2, 3);
+            fg.fillRect(carX + 26, carY + 7, 2, 3);
+        }
+
+        // Ground edge highlight
+        fg.lineStyle(2, 0x9BBC0F, 0.3);
+        fg.lineBetween(0, 600, 1280, 600);
     }
 
     /**

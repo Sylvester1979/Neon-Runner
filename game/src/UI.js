@@ -258,8 +258,8 @@ class UI {
         });
         this.gameOverContainer.add(retryButton);
 
-        // Menu button
-        const menuButton = this.createButton(740, 500, 'MENU', () => {
+        // Menu button (10px gap from RETRY button)
+        const menuButton = this.createButton(750, 500, 'MENU', () => {
             this.hideGameOver();
             this.showMenu();
             this.scene.returnToMenu();
@@ -302,10 +302,10 @@ class UI {
 
         // Make interactive
         const hitArea = new Phaser.Geom.Rectangle(-100, -30, 200, 60);
-        button.setSize(200, 60);
         button.setInteractive(hitArea, Phaser.Geom.Rectangle.Contains);
 
         button.on('pointerover', () => {
+            this.scene.input.setDefaultCursor('pointer');
             bg.clear();
             bg.fillStyle(0x9D4EDD, 1);
             bg.fillRect(-100, -30, 200, 60);
@@ -314,6 +314,7 @@ class UI {
         });
 
         button.on('pointerout', () => {
+            this.scene.input.setDefaultCursor('default');
             bg.clear();
             bg.fillStyle(0x7209B7, 1);
             bg.fillRect(-100, -30, 200, 60);
