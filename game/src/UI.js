@@ -38,6 +38,7 @@ class UI {
      */
     createMenu() {
         this.menuContainer = this.scene.add.container(0, 0);
+        this.menuContainer.setDepth(1000); // ABOVE everything else
 
         // Semi-transparent background
         const bg = this.scene.add.graphics();
@@ -123,6 +124,7 @@ class UI {
      */
     createHUD() {
         this.hudContainer = this.scene.add.container(0, 0);
+        this.hudContainer.setDepth(1000); // ABOVE everything else
 
         // Score
         this.scoreText = this.scene.add.text(30, 30, 'SCORE: 0', {
@@ -202,6 +204,7 @@ class UI {
      */
     createGameOverScreen() {
         this.gameOverContainer = this.scene.add.container(0, 0);
+        this.gameOverContainer.setDepth(1000); // ABOVE everything else
 
         // Background
         const bg = this.scene.add.graphics();

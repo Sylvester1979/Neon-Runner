@@ -289,6 +289,7 @@ function setupTouchControls() {
     // Left half: Jump
     const leftTouch = this.add.rectangle(0, 0, 640, 720, 0x000000, 0);
     leftTouch.setOrigin(0, 0);
+    leftTouch.setDepth(-1000); // BEHIND everything else
     leftTouch.setInteractive();
 
     leftTouch.on('pointerdown', () => {
@@ -300,6 +301,7 @@ function setupTouchControls() {
     // Right half: Slide
     const rightTouch = this.add.rectangle(640, 0, 640, 720, 0x000000, 0);
     rightTouch.setOrigin(0, 0);
+    rightTouch.setDepth(-1000); // BEHIND everything else
     rightTouch.setInteractive();
 
     let isSliding = false;
