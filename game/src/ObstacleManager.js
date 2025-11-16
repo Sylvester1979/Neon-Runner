@@ -226,10 +226,34 @@ class ObstacleManager {
         const colors = [0x0F380F, 0x306230, 0x8BAC0F, 0x9BBC0F];
 
         if (obstacle.type === 'gap') {
-            // Draw gap markers
-            g.fillStyle(0xFF0000, 1);
+            // Draw gap markers with INTENSE pulsing effect for visibility
+            const pulse = Math.sin(obstacle.animationTimer * 6) * 0.3 + 0.7; // Fast pulse
+            const glowSize = Math.sin(obstacle.animationTimer * 4) * 2 + 2; // Size pulse
+
+            // Outer glow (bright warning)
+            g.fillStyle(0xFF0000, pulse * 0.4);
+            g.fillRect(-4 - glowSize, -4, 16 + glowSize * 2, 28);
+            g.fillRect(obstacle.width - 12 - glowSize, -4, 16 + glowSize * 2, 28);
+
+            // Main markers (solid and visible)
+            g.fillStyle(0xFF0000, pulse);
             g.fillRect(0, 0, 8, 20);
             g.fillRect(obstacle.width - 8, 0, 8, 20);
+
+            // Inner bright core (extra visibility)
+            g.fillStyle(0xFFFFFF, pulse * 0.8);
+            g.fillRect(2, 4, 4, 12);
+            g.fillRect(obstacle.width - 6, 4, 4, 12);
+
+            // Warning stripes (alternating pattern)
+            const stripePhase = Math.floor(obstacle.animationTimer * 8) % 2;
+            g.fillStyle(0xFFFF00, pulse * 0.6);
+            for (let y = 0; y < 20; y += 4) {
+                if ((y / 4 + stripePhase) % 2 === 0) {
+                    g.fillRect(0, y, 8, 2);
+                    g.fillRect(obstacle.width - 8, y, 8, 2);
+                }
+            }
         } else {
             // Draw solid barrier
             g.fillStyle(colors[1], 1);
