@@ -219,109 +219,224 @@ class Player {
     }
 
     /**
-     * 8-bit era sprite - simple geometric character
+     * 8-bit era sprite - Enhanced retro character
      */
     draw8Bit(width, height) {
         const colors = [0x0F380F, 0x306230, 0x8BAC0F, 0x9BBC0F];
         const frame = this.animationFrame;
 
-        // Body (square)
+        // Glow outline (subtle)
+        this.graphics.lineStyle(2, colors[3], 0.3);
+        this.graphics.strokeRect(-width/2 - 2, -height/2 - 14, width + 4, height * 0.6 + 16);
+
+        // Body (square) with gradient effect
         this.graphics.fillStyle(colors[2], 1);
         this.graphics.fillRect(-width/2, -height/2, width, height * 0.6);
+        this.graphics.fillStyle(colors[3], 0.3);
+        this.graphics.fillRect(-width/2, -height/2, width, height * 0.2);
 
-        // Head
+        // Head with detail
         this.graphics.fillStyle(colors[3], 1);
         this.graphics.fillRect(-width/2 + 8, -height/2 - 12, width - 16, 12);
+
+        // Eyes (pixelated)
+        this.graphics.fillStyle(0x000000, 1);
+        this.graphics.fillRect(-width/2 + 12, -height/2 - 9, 4, 4);
+        this.graphics.fillRect(width/2 - 16, -height/2 - 9, 4, 4);
 
         // Legs (animated)
         const legOffset = Math.sin(frame * Math.PI / 1.5) * 4;
         this.graphics.fillStyle(colors[1], 1);
 
         if (!this.isSliding) {
-            // Left leg
+            // Left leg with motion blur
             this.graphics.fillRect(-width/2 + 8, height * 0.1, 8, height * 0.4 + legOffset);
-            // Right leg
+            this.graphics.fillStyle(colors[1], 0.3);
+            this.graphics.fillRect(-width/2 + 6, height * 0.1, 10, height * 0.4 + legOffset);
+
+            // Right leg with motion blur
+            this.graphics.fillStyle(colors[1], 1);
             this.graphics.fillRect(width/2 - 16, height * 0.1, 8, height * 0.4 - legOffset);
+            this.graphics.fillStyle(colors[1], 0.3);
+            this.graphics.fillRect(width/2 - 18, height * 0.1, 10, height * 0.4 - legOffset);
         }
     }
 
     /**
-     * 16-bit era sprite - more detailed character
+     * 16-bit era sprite - Enhanced cyberpunk character
      */
     draw16Bit(width, height) {
         const colors = [0x7209B7, 0x9D4EDD, 0x00FFFF, 0xFF00FF];
         const frame = this.animationFrame;
 
+        // Outer glow (pulsing)
+        const glowPulse = Math.sin(Date.now() / 200) * 0.2 + 0.6;
+        this.graphics.lineStyle(4, colors[3], glowPulse * 0.4);
+        this.graphics.strokeRect(-width/2, -height/2, width, height * 0.5 + 8);
+
         // Body with gradient effect
         this.graphics.fillStyle(colors[1], 1);
         this.graphics.fillRect(-width/2 + 4, -height/2 + 4, width - 8, height * 0.5);
 
-        // Head
+        // Body highlight
+        this.graphics.fillStyle(colors[2], 0.4);
+        this.graphics.fillRect(-width/2 + 6, -height/2 + 6, width - 12, height * 0.15);
+
+        // Head with glow
         this.graphics.fillStyle(colors[2], 1);
         this.graphics.fillCircle(0, -height/2 - 6, 10);
+        this.graphics.fillStyle(colors[2], 0.3);
+        this.graphics.fillCircle(0, -height/2 - 6, 14);
 
-        // Arms (animated)
+        // Visor/eyes
+        this.graphics.fillStyle(colors[3], 0.8);
+        this.graphics.fillRect(-8, -height/2 - 8, 16, 3);
+
+        // Arms (animated) with glow trail
         const armSwing = Math.sin(frame * Math.PI / 2.5) * 8;
+
+        // Arm glow
+        this.graphics.lineStyle(6, colors[1], 0.3);
+        this.graphics.lineBetween(-width/2, -height/4, -width/2 - 8, height/4 + armSwing);
+        this.graphics.lineBetween(width/2, -height/4, width/2 + 8, height/4 - armSwing);
+
+        // Arm solid
         this.graphics.lineStyle(4, colors[0], 1);
         this.graphics.lineBetween(-width/2, -height/4, -width/2 - 8, height/4 + armSwing);
         this.graphics.lineBetween(width/2, -height/4, width/2 + 8, height/4 - armSwing);
 
-        // Legs (animated)
+        // Legs (animated) with glow
         if (!this.isSliding) {
             const legSwing = Math.sin(frame * Math.PI / 2.5) * 10;
+
+            // Leg glow
+            this.graphics.lineStyle(8, colors[1], 0.3);
+            this.graphics.lineBetween(-8, height * 0.3, -8 - legSwing, height * 0.6);
+            this.graphics.lineBetween(8, height * 0.3, 8 + legSwing, height * 0.6);
+
+            // Leg solid
             this.graphics.lineStyle(6, colors[0], 1);
             this.graphics.lineBetween(-8, height * 0.3, -8 - legSwing, height * 0.6);
             this.graphics.lineBetween(8, height * 0.3, 8 + legSwing, height * 0.6);
         }
 
-        // Glow effect
-        this.graphics.lineStyle(2, colors[3], 0.5);
+        // Inner neon outline
+        this.graphics.lineStyle(2, colors[3], 0.7);
         this.graphics.strokeRect(-width/2 + 2, -height/2 + 2, width - 4, height * 0.5 + 2);
     }
 
     /**
-     * Neon era sprite - sleek futuristic runner
+     * Neon era sprite - INTENSE futuristic runner with maximum glow
      */
     drawNeon(width, height) {
         const frame = this.animationFrame;
+        const pulse = Math.sin(Date.now() / 150) * 0.3 + 0.7;
+
+        // Outermost glow aura
+        this.graphics.fillStyle(0x00FFFF, 0.1 * pulse);
+        this.graphics.fillRect(-width/2 - 6, -height/2 - 6, width + 12, height * 0.55 + 12);
+
+        // Secondary glow layer
+        this.graphics.fillStyle(0xFF00FF, 0.15 * pulse);
+        this.graphics.fillRect(-width/2, -height/2, width, height * 0.55 + 6);
 
         // Main body (sleek design)
-        this.graphics.fillStyle(0x1a1a2e, 1);
+        this.graphics.fillStyle(0x0a0a1a, 1);
         this.graphics.fillRect(-width/2 + 6, -height/2 + 6, width - 12, height * 0.55);
 
-        // Neon outline (cyan)
-        this.graphics.lineStyle(3, 0x00FFFF, 1);
+        // Inner body glow
+        this.graphics.fillStyle(0x00FFFF, 0.2);
+        this.graphics.fillRect(-width/2 + 8, -height/2 + 8, width - 16, height * 0.2);
+
+        // Triple neon outline for intense effect
+        this.graphics.lineStyle(4, 0x00FFFF, 0.4 * pulse);
+        this.graphics.strokeRect(-width/2 + 4, -height/2 + 4, width - 8, height * 0.55 + 2);
+
+        this.graphics.lineStyle(3, 0x00FFFF, 0.8);
         this.graphics.strokeRect(-width/2 + 6, -height/2 + 6, width - 12, height * 0.55);
 
-        // Head with glow
-        this.graphics.fillStyle(0x00FFFF, 0.8);
+        this.graphics.lineStyle(1, 0xFF00FF, 1);
+        this.graphics.strokeRect(-width/2 + 7, -height/2 + 7, width - 14, height * 0.55 - 2);
+
+        // Head with intense multi-layer glow
+        this.graphics.fillStyle(0x00FFFF, 0.2);
+        this.graphics.fillCircle(0, -height/2 - 8, 20);
+
+        this.graphics.fillStyle(0x00FFFF, 0.4);
+        this.graphics.fillCircle(0, -height/2 - 8, 16);
+
+        this.graphics.fillStyle(0x00FFFF, 0.9);
         this.graphics.fillCircle(0, -height/2 - 8, 12);
-        this.graphics.lineStyle(2, 0xFF00FF, 0.8);
+
+        // Head outline glow
+        this.graphics.lineStyle(2, 0xFF00FF, 0.9);
         this.graphics.strokeCircle(0, -height/2 - 8, 14);
 
-        // Visor
-        this.graphics.fillStyle(0xFF00FF, 0.6);
-        this.graphics.fillRect(-8, -height/2 - 10, 16, 4);
+        this.graphics.lineStyle(1, 0xFF00FF, 0.4);
+        this.graphics.strokeCircle(0, -height/2 - 8, 17);
 
-        // Animated energy trails
-        const trailLength = Math.sin(frame * Math.PI / 4) * 12 + 16;
-        this.graphics.lineStyle(2, 0xFF00FF, 0.6);
+        // Visor with glow
+        this.graphics.fillStyle(0xFF00FF, 0.9);
+        this.graphics.fillRect(-10, -height/2 - 10, 20, 5);
+        this.graphics.fillStyle(0xFF00FF, 0.3);
+        this.graphics.fillRect(-12, -height/2 - 11, 24, 7);
+
+        // Animated energy trails (multiple layers)
+        const trailLength = Math.sin(frame * Math.PI / 4) * 12 + 18;
+
+        // Trail glow
+        this.graphics.lineStyle(6, 0xFF00FF, 0.2);
         this.graphics.lineBetween(-width/2, 0, -width/2 - trailLength, 0);
+        this.graphics.lineStyle(4, 0x00FFFF, 0.2);
+        this.graphics.lineBetween(-width/2, height/4, -width/2 - trailLength * 0.8, height/4);
 
-        this.graphics.lineStyle(2, 0x00FFFF, 0.6);
-        this.graphics.lineBetween(-width/2, height/4, -width/2 - trailLength * 0.7, height/4);
+        // Trail solid
+        this.graphics.lineStyle(2, 0xFF00FF, 0.8);
+        this.graphics.lineBetween(-width/2, 0, -width/2 - trailLength, 0);
+        this.graphics.lineStyle(2, 0x00FFFF, 0.8);
+        this.graphics.lineBetween(-width/2, height/4, -width/2 - trailLength * 0.8, height/4);
 
-        // Legs (smooth animation)
+        // Energy particles trailing
+        for (let i = 0; i < 3; i++) {
+            const px = -width/2 - i * 8 - (frame % 4) * 3;
+            const py = i * 6;
+            this.graphics.fillStyle(i % 2 === 0 ? 0x00FFFF : 0xFF00FF, 0.6);
+            this.graphics.fillCircle(px, py, 2);
+        }
+
+        // Legs (smooth animation) with intense glow
         if (!this.isSliding) {
             const legSwing = Math.sin(frame * Math.PI / 4) * 12;
+
+            // Outermost leg glow
+            this.graphics.lineStyle(10, 0x00FFFF, 0.15);
+            this.graphics.lineBetween(-6, height * 0.35, -6 - legSwing, height * 0.65);
+            this.graphics.lineBetween(6, height * 0.35, 6 + legSwing, height * 0.65);
+
+            // Middle leg glow
+            this.graphics.lineStyle(6, 0x00FFFF, 0.4);
+            this.graphics.lineBetween(-6, height * 0.35, -6 - legSwing, height * 0.65);
+            this.graphics.lineBetween(6, height * 0.35, 6 + legSwing, height * 0.65);
+
+            // Solid legs
             this.graphics.lineStyle(4, 0x00FFFF, 1);
             this.graphics.lineBetween(-6, height * 0.35, -6 - legSwing, height * 0.65);
             this.graphics.lineBetween(6, height * 0.35, 6 + legSwing, height * 0.65);
 
-            // Glow on legs
-            this.graphics.lineStyle(6, 0x00FFFF, 0.3);
+            // Inner highlight
+            this.graphics.lineStyle(1, 0xFFFFFF, 0.8);
             this.graphics.lineBetween(-6, height * 0.35, -6 - legSwing, height * 0.65);
             this.graphics.lineBetween(6, height * 0.35, 6 + legSwing, height * 0.65);
+        }
+
+        // Speed lines for extra motion
+        if (!this.isSliding) {
+            this.graphics.lineStyle(1, 0x00FFFF, 0.3);
+            for (let i = 0; i < 4; i++) {
+                const sx = -width/2 - 10 - i * 6;
+                const sy = -height/4 + i * 8;
+                this.graphics.lineBetween(sx, sy, sx - 15, sy);
+            }
         }
     }
 
