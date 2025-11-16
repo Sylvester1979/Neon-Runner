@@ -5,15 +5,11 @@
 
 // Game configuration
 const config = {
-    type: Phaser.CANVAS, // Force canvas renderer for Electron
+    type: Phaser.AUTO,
     width: 1280,
     height: 720,
     backgroundColor: '#000000',
     parent: 'game-container',
-    scale: {
-        mode: Phaser.Scale.NONE, // Disable scaling in Electron
-        autoCenter: Phaser.Scale.NO_CENTER
-    },
     physics: {
         default: 'arcade',
         arcade: {
@@ -21,22 +17,10 @@ const config = {
             debug: false
         }
     },
-    input: {
-        mouse: {
-            preventDefaultWheel: false,
-            preventDefaultMove: false,
-            preventDefaultDown: false,
-            preventDefaultUp: false
-        }
-    },
     scene: {
         preload: preload,
         create: create,
         update: update
-    },
-    fps: {
-        target: 60,
-        forceSetTimeOut: false
     }
 };
 

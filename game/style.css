@@ -16,9 +16,11 @@ body {
 
 #game-container {
     position: relative;
-    width: 100%;
-    max-width: 1280px;
+    width: 1280px;
+    height: 720px;
     margin: 0 auto;
+    background: #000;
+    display: block !important;
 }
 
 /* Loading Screen */
