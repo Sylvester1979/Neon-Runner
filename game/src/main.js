@@ -54,10 +54,12 @@ let fpsText;
  */
 function preload() {
     console.log('🎮 Preload started...');
-    // Preload audio (gracefully handles missing files)
+
+    // Create audio manager but DON'T preload audio
+    // Audio will be loaded lazily when needed
     audioManager = new AudioManager(this);
-    audioManager.preloadAudio();
-    console.log('✅ Preload complete');
+
+    console.log('✅ Preload complete - NO ASSETS TO LOAD, MOVING TO CREATE');
 }
 
 /**

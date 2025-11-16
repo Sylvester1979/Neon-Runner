@@ -71,16 +71,18 @@ class AudioManager {
      * Initialize audio system after scene is created
      */
     init() {
-        // Check if any music was loaded
-        const anyMusicLoaded = Object.values(this.tracksLoaded).some(loaded => loaded);
+        console.log('🔇 AudioManager: Running in NO-MUSIC mode');
+        console.log('   Audio files are disabled to prevent Electron loading issues');
+        console.log('   Game will run with procedural sound effects only');
 
-        if (!anyMusicLoaded) {
-            console.log('🔇 No music files found. Add MP3 files to assets/audio/ folder.');
-            console.log('📖 See assets/audio/README.md for instructions');
-        }
+        // Mark all tracks as not loaded
+        Object.keys(this.tracksLoaded).forEach(key => {
+            this.tracksLoaded[key] = false;
+        });
 
         // Create procedural sound effects (always work, even without files)
         this.createProceduralSFX();
+        console.log('✅ AudioManager: Procedural SFX ready');
     }
 
     /**
