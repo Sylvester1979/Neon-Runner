@@ -3,9 +3,6 @@
  * 80s Cyberpunk Endless Runner with Era-Shifting Mechanics
  */
 
-// Fix for Electron dragEvent error
-window.dragEvent = null;
-
 // Game configuration
 const config = {
     type: Phaser.CANVAS, // Force canvas renderer for Electron

@@ -6,6 +6,17 @@
     <meta name="description" content="NEON RUNNER - 80s Cyberpunk Endless Runner">
     <title>NEON RUNNER</title>
     <link rel="stylesheet" href="style.css">
+
+    <!-- CRITICAL: Fix Electron dragEvent error BEFORE Phaser loads -->
+    <script>
+        window.dragEvent = undefined;
+        window.addEventListener('error', function(e) {
+            if (e.message && e.message.includes('dragEvent')) {
+                e.preventDefault();
+                console.log('Suppressed dragEvent error');
+            }
+        }, true);
+    </script>
 </head>
 <body>
     <div id="game-container">
