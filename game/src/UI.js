@@ -377,6 +377,12 @@ class UI {
      * Hide menu
      */
     hideMenu() {
+        // Close how to play overlay if open
+        if (this.howToPlayOverlay) {
+            this.howToPlayOverlay.destroy();
+            this.howToPlayOverlay = null;
+        }
+
         this.menuContainer.setVisible(false);
         this.hudContainer.setVisible(true);
         this.state = 'playing';
@@ -434,12 +440,21 @@ class UI {
      * Show how to play
      */
     showHowToPlay() {
+        // Hide any existing overlay first
+        if (this.howToPlayOverlay) {
+            this.howToPlayOverlay.destroy();
+            this.howToPlayOverlay = null;
+        }
+
         // Create temporary overlay
         const overlay = this.scene.add.container(0, 0);
+        overlay.setDepth(2000); // ABOVE EVERYTHING (menu is 1000)
+        this.howToPlayOverlay = overlay; // Store reference
 
         const bg = this.scene.add.graphics();
         bg.fillStyle(0x000000, 0.95);
         bg.fillRect(0, 0, 1280, 720);
+        bg.setInteractive(new Phaser.Geom.Rectangle(0, 0, 1280, 720), Phaser.Geom.Rectangle.Contains);
         overlay.add(bg);
 
         const title = this.scene.add.text(640, 80, 'HOW TO PLAY', {
@@ -458,7 +473,7 @@ class UI {
             '• Each era lasts 10 seconds with unique obstacles\n\n' +
             '• Build combos by dodging consecutive obstacles\n\n' +
             '• Speed increases as you progress\n\n' +
-            'Press any key to return...', {
+            'Press any key or click to return...', {
             fontSize: '22px',
             fontFamily: 'Courier New, monospace',
             color: '#ffffff',
@@ -468,12 +483,17 @@ class UI {
         instructions.setOrigin(0.5);
         overlay.add(instructions);
 
-        // Close on any key
+        // Close on any key OR click
         const closeHandler = () => {
-            overlay.destroy();
+            if (this.howToPlayOverlay) {
+                this.howToPlayOverlay.destroy();
+                this.howToPlayOverlay = null;
+            }
             this.scene.input.keyboard.off('keydown', closeHandler);
+            bg.off('pointerdown', closeHandler);
         };
         this.scene.input.keyboard.on('keydown', closeHandler);
+        bg.on('pointerdown', closeHandler);
     }
 
     /**
