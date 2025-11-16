@@ -3,16 +3,19 @@
  * 80s Cyberpunk Endless Runner with Era-Shifting Mechanics
  */
 
+// Fix for Electron dragEvent error
+window.dragEvent = null;
+
 // Game configuration
 const config = {
-    type: Phaser.AUTO,
+    type: Phaser.CANVAS, // Force canvas renderer for Electron
     width: 1280,
     height: 720,
     backgroundColor: '#000000',
     parent: 'game-container',
     scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
+        mode: Phaser.Scale.NONE, // Disable scaling in Electron
+        autoCenter: Phaser.Scale.NO_CENTER
     },
     physics: {
         default: 'arcade',
@@ -21,10 +24,22 @@ const config = {
             debug: false
         }
     },
+    input: {
+        mouse: {
+            preventDefaultWheel: false,
+            preventDefaultMove: false,
+            preventDefaultDown: false,
+            preventDefaultUp: false
+        }
+    },
     scene: {
         preload: preload,
         create: create,
         update: update
+    },
+    fps: {
+        target: 60,
+        forceSetTimeOut: false
     }
 };
 
@@ -511,5 +526,21 @@ window.addEventListener('load', () => {
     }
 
     console.log('✅ Phaser loaded successfully:', Phaser.VERSION);
+
+    // Create game
     game = new Phaser.Game(config);
+
+    console.log('✅ Phaser Game instance created');
+
+    // Check if canvas was created
+    setTimeout(() => {
+        const canvas = document.querySelector('canvas');
+        if (canvas) {
+            console.log('✅ Canvas created:', canvas.width, 'x', canvas.height);
+            console.log('Canvas style:', canvas.style.cssText);
+            console.log('Canvas display:', window.getComputedStyle(canvas).display);
+        } else {
+            console.error('❌ Canvas NOT created!');
+        }
+    }, 1000);
 });
