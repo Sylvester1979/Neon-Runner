@@ -26,18 +26,36 @@ function createWindow() {
     fullscreenable: true,
     title: 'NEON RUNNER',
     backgroundColor: '#000000',
+    show: false, // Don't show until ready
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
       devTools: true,
-      webSecurity: false // Allow loading Phaser from CDN
+      webSecurity: false, // Allow loading Phaser from CDN
+      allowRunningInsecureContent: true,
+      enableRemoteModule: false
     },
     icon: path.join(__dirname, 'build', 'icon.png')
   });
 
   // Load the game
   mainWindow.loadFile('game/index.html');
+
+  // Show window when ready
+  mainWindow.once('ready-to-show', () => {
+    console.log('Window ready to show');
+    mainWindow.show();
+  });
+
+  // When page finishes loading
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log('Page finished loading');
+    // Open DevTools in development mode
+    if (process.env.NODE_ENV === 'development' || process.argv.includes('--dev')) {
+      mainWindow.webContents.openDevTools();
+    }
+  });
 
   // Create application menu
   createMenu();
@@ -47,13 +65,11 @@ function createWindow() {
     mainWindow = null;
   });
 
-  // Log console messages from renderer
+  // Log console messages from renderer (for debugging)
   mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
-    console.log(`[Renderer] ${message}`);
+    const levelStr = level === 1 ? 'WARN' : level === 2 ? 'ERROR' : 'LOG';
+    console.log(`[Renderer ${levelStr}] ${message}`);
   });
-
-  // Open DevTools automatically in development
-  mainWindow.webContents.openDevTools();
 }
 
 /**

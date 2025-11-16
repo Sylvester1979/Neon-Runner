@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TEST</title>
+    <style>
+        body { margin: 0; padding: 0; background: #000; }
+        #game { margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <div id="game"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+    <script>
+        const config = {
+            type: Phaser.AUTO,
+            width: 1280,
+            height: 720,
+            parent: 'game',
+            backgroundColor: '#0000ff',
+            scene: {
+                create: function() {
+                    this.add.text(400, 300, 'PHASER WORKS!', {
+                        fontSize: '64px',
+                        color: '#ffffff'
+                    });
+                    console.log('✅ Scene created!');
+                }
+            }
+        };
+
+        window.onload = () => {
+            console.log('✅ Phaser:', typeof Phaser);
+            const game = new Phaser.Game(config);
+            console.log('✅ Game created');
+        };
+    </script>
+</body>
+</html>

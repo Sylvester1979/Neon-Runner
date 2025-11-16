@@ -64,48 +64,68 @@ function preload() {
  * Create game
  */
 function create() {
-    console.log('🎮 Create started...');
-    // Initialize audio system
-    audioManager.init();
-    console.log('✅ Audio manager initialized');
+    console.log('🎮 CREATE STARTED');
 
-    // Create particle system
-    particleSystem = new ParticleSystem(this);
+    try {
+        // Initialize audio system
+        audioManager.init();
+        console.log('✅ Audio manager initialized');
 
-    // Create player
-    player = new Player(this, 150, 600, particleSystem, audioManager);
+        // Create particle system
+        particleSystem = new ParticleSystem(this);
+        console.log('✅ Particle system created');
 
-    // Create obstacle manager
-    obstacleManager = new ObstacleManager(this, player, particleSystem, audioManager);
+        // Create player
+        player = new Player(this, 150, 600, particleSystem, audioManager);
+        console.log('✅ Player created at', player.x, player.y);
 
-    // Create era manager
-    eraManager = new EraManager(this, player, obstacleManager, particleSystem, audioManager);
+        // Create obstacle manager
+        obstacleManager = new ObstacleManager(this, player, particleSystem, audioManager);
+        console.log('✅ Obstacle manager created');
 
-    // Create UI
-    ui = new UI(this);
-    console.log('✅ UI created, menu visible:', ui.menuContainer.visible);
+        // Create era manager
+        eraManager = new EraManager(this, player, obstacleManager, particleSystem, audioManager);
+        console.log('✅ Era manager created');
 
-    // Setup debug
-    setupDebug.call(this);
+        // Create UI
+        ui = new UI(this);
+        console.log('✅ UI created');
+        console.log('   Menu container visible:', ui.menuContainer.visible);
+        console.log('   Menu container depth:', ui.menuContainer.depth);
+        console.log('   Menu state:', ui.state);
 
-    // Setup pause
-    setupPause.call(this);
+        // Setup debug
+        setupDebug.call(this);
+        console.log('✅ Debug setup complete');
 
-    // Setup Electron integration (if running in Electron)
-    if (window.electronAPI) {
-        setupElectronIntegration.call(this);
+        // Setup pause
+        setupPause.call(this);
+        console.log('✅ Pause setup complete');
+
+        // Setup Electron integration (if running in Electron)
+        if (window.electronAPI) {
+            setupElectronIntegration.call(this);
+            console.log('✅ Electron integration setup');
+        }
+
+        // Play menu music
+        audioManager.playTrack('menu', true);
+        console.log('✅ Menu music started');
+
+        // Hide loading screen
+        hideLoadingScreen();
+        console.log('✅ Loading screen hidden');
+
+        // Store scene reference for callbacks
+        this.startGame = startGame;
+        this.restartGame = restartGame;
+        this.returnToMenu = returnToMenu;
+
+        console.log('🎉 CREATE COMPLETE - GAME READY!');
+    } catch (error) {
+        console.error('❌ ERROR IN CREATE:', error);
+        console.error('Stack:', error.stack);
     }
-
-    // Play menu music
-    audioManager.playTrack('menu', true);
-
-    // Hide loading screen
-    hideLoadingScreen();
-
-    // Store scene reference for callbacks
-    this.startGame = startGame;
-    this.restartGame = restartGame;
-    this.returnToMenu = returnToMenu;
 }
 
 /**
@@ -497,31 +517,57 @@ function hideLoadingScreen() {
     }
 }
 
-// Initialize game when DOM is ready
-window.addEventListener('load', () => {
+// Initialize game
+function initGame() {
+    console.log('🎮 Initializing game...');
+
     // Check if Phaser loaded
     if (typeof Phaser === 'undefined') {
-        console.error('❌ CRITICAL: Phaser failed to load from CDN!');
-        document.body.innerHTML = '<div style="color: red; padding: 50px; font-family: monospace;"><h1>ERROR: Phaser failed to load</h1><p>The game engine could not be loaded. Please check your internet connection or try again.</p></div>';
+        console.error('❌ CRITICAL: Phaser failed to load!');
+
+        // Show error on screen
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+            loadingScreen.innerHTML = `
+                <h1 style="color: #ff0000;">ERROR</h1>
+                <p style="color: #00ffff;">Phaser failed to load from CDN</p>
+                <p style="color: #ffffff; font-size: 14px;">Check internet connection</p>
+            `;
+        }
         return;
     }
 
     console.log('✅ Phaser loaded successfully:', Phaser.VERSION);
 
     // Create game
-    game = new Phaser.Game(config);
+    try {
+        game = new Phaser.Game(config);
+        console.log('✅ Phaser Game instance created');
 
-    console.log('✅ Phaser Game instance created');
+        // Verify canvas after delay
+        setTimeout(() => {
+            const canvas = document.querySelector('canvas');
+            if (canvas) {
+                console.log('✅ Canvas:', canvas.width, 'x', canvas.height);
+                console.log('Canvas parent:', canvas.parentElement.id);
+                console.log('Canvas visible:', canvas.style.display !== 'none');
+            } else {
+                console.error('❌ Canvas NOT created!');
+            }
+        }, 2000);
+    } catch (error) {
+        console.error('❌ Error creating Phaser game:', error);
+    }
+}
 
-    // Check if canvas was created
-    setTimeout(() => {
-        const canvas = document.querySelector('canvas');
-        if (canvas) {
-            console.log('✅ Canvas created:', canvas.width, 'x', canvas.height);
-            console.log('Canvas style:', canvas.style.cssText);
-            console.log('Canvas display:', window.getComputedStyle(canvas).display);
-        } else {
-            console.error('❌ Canvas NOT created!');
-        }
-    }, 1000);
-});
+// Wait for everything to load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('✅ DOM ready');
+        // Give scripts time to load
+        setTimeout(initGame, 100);
+    });
+} else {
+    // Already loaded
+    setTimeout(initGame, 100);
+}
