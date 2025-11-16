@@ -26,8 +26,11 @@ class EraManager {
 
         // Background layers
         this.backgroundGraphics = scene.add.graphics();
+        this.backgroundGraphics.setDepth(0); // Furthest back
         this.midgroundGraphics = scene.add.graphics();
+        this.midgroundGraphics.setDepth(10); // Middle layer
         this.foregroundGraphics = scene.add.graphics();
+        this.foregroundGraphics.setDepth(20); // Front layer but behind player
 
         // Parallax positions
         this.bgScrollX = 0;

@@ -40,6 +40,7 @@ class Player {
 
         // Graphics
         this.container = scene.add.container(x, this.y);
+        this.container.setDepth(100); // ABOVE background but below UI
         this.graphics = scene.add.graphics();
         this.container.add(this.graphics);
 

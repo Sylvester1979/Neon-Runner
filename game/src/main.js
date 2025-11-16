@@ -128,10 +128,21 @@ function create() {
     }
 }
 
+// Track if we logged initial state
+let hasLoggedInitialState = false;
+
 /**
  * Main update loop
  */
 function update(time, delta) {
+    // Log initial game state once
+    if (!hasLoggedInitialState) {
+        console.log('🎮 FIRST UPDATE - Game State:', gameState);
+        console.log('   Menu visible:', ui.menuContainer.visible);
+        console.log('   HUD visible:', ui.hudContainer.visible);
+        hasLoggedInitialState = true;
+    }
+
     // Apply slow motion for debug
     const effectiveDelta = debugMode.slowMotion ? delta * 0.5 : delta;
 
@@ -141,6 +152,12 @@ function update(time, delta) {
             if (!isPaused) {
                 updateGameplay(effectiveDelta);
             }
+            break;
+        case 'menu':
+            // In menu - do nothing, just show menu
+            break;
+        case 'gameover':
+            // Game over - do nothing
             break;
     }
 
@@ -199,8 +216,12 @@ function updateGameplay(delta) {
  * Start game
  */
 function startGame() {
+    console.log('🎮 START GAME CALLED');
     gameState = 'playing';
     isPaused = false;
+
+    // Hide menu, show HUD
+    ui.hideMenu();
 
     // Reset all systems
     player.reset();
@@ -210,6 +231,8 @@ function startGame() {
 
     // Start era music
     audioManager.playTrack('era_8bit', true, 1000);
+
+    console.log('✅ Game started - State:', gameState);
 }
 
 /**

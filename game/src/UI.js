@@ -361,10 +361,15 @@ class UI {
      * Show menu
      */
     showMenu() {
+        console.log('📋 SHOWING MENU');
         this.state = 'menu';
         this.menuContainer.setVisible(true);
+        this.menuContainer.setAlpha(1); // Ensure fully opaque
         this.hudContainer.setVisible(false);
         this.gameOverContainer.setVisible(false);
+        console.log('   Menu visible:', this.menuContainer.visible);
+        console.log('   Menu alpha:', this.menuContainer.alpha);
+        console.log('   Menu depth:', this.menuContainer.depth);
     }
 
     /**
