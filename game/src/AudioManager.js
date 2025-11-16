@@ -27,6 +27,8 @@ class AudioManager {
      * Uses error handling to prevent crashes if files are missing
      */
     preloadAudio() {
+        console.log('🎵 AudioManager: Starting preload...');
+
         const audioFiles = [
             { key: 'menu', path: 'assets/audio/menu.mp3' },
             { key: 'era_8bit', path: 'assets/audio/era_8bit.mp3' },
@@ -34,24 +36,35 @@ class AudioManager {
             { key: 'era_neon', path: 'assets/audio/era_neon.mp3' }
         ];
 
-        audioFiles.forEach(file => {
-            // Phaser will handle missing files gracefully in the load event
-            this.scene.load.audio(file.key, file.path);
-        });
+        try {
+            audioFiles.forEach(file => {
+                // Phaser will handle missing files gracefully in the load event
+                console.log(`🎵 Queuing audio: ${file.key}`);
+                this.scene.load.audio(file.key, file.path);
+            });
 
-        // Listen for load errors
-        this.scene.load.on('loaderror', (file) => {
-            if (file.type === 'audio') {
-                console.log(`🔇 Audio file not found: ${file.key} - Game will run without music`);
-                this.tracksLoaded[file.key] = false;
-            }
-        });
+            // Listen for load errors
+            this.scene.load.on('loaderror', (file) => {
+                if (file.type === 'audio') {
+                    console.log(`🔇 Audio file not found: ${file.key} - Game will run without music`);
+                    this.tracksLoaded[file.key] = false;
+                }
+            });
 
-        // Listen for successful loads
-        this.scene.load.on('filecomplete-audio', (key) => {
-            this.tracksLoaded[key] = true;
-            console.log(`🎵 Loaded audio: ${key}`);
-        });
+            // Listen for successful loads
+            this.scene.load.on('filecomplete-audio', (key) => {
+                this.tracksLoaded[key] = true;
+                console.log(`✅ Loaded audio: ${key}`);
+            });
+
+            console.log('✅ AudioManager: Preload setup complete');
+        } catch (error) {
+            console.error('❌ AudioManager preload error:', error);
+            // Set all tracks as not loaded
+            Object.keys(this.tracksLoaded).forEach(key => {
+                this.tracksLoaded[key] = false;
+            });
+        }
     }
 
     /**

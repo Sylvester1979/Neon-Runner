@@ -10,12 +10,23 @@
     <!-- CRITICAL: Fix Electron dragEvent error BEFORE Phaser loads -->
     <script>
         window.dragEvent = undefined;
+
+        // Global error handler
         window.addEventListener('error', function(e) {
+            console.error('❌ GLOBAL ERROR:', e.message);
+            console.error('   File:', e.filename);
+            console.error('   Line:', e.lineno);
+            console.error('   Column:', e.colno);
+            console.error('   Error object:', e.error);
+
             if (e.message && e.message.includes('dragEvent')) {
                 e.preventDefault();
                 console.log('Suppressed dragEvent error');
             }
         }, true);
+
+        // Log script loading
+        console.log('🚀 HTML loaded, scripts will load next...');
     </script>
 </head>
 <body>
