@@ -98,8 +98,21 @@ class UI {
         highScoreText.setOrigin(0.5);
         this.menuContainer.add(highScoreText);
 
+        // Dedication (heartfelt message)
+        const dedication = this.scene.add.text(640, 540,
+            '~ Dedicated to the good old 80s ~\nand to the kid I once was', {
+            fontSize: '18px',
+            fontFamily: 'Courier New, monospace',
+            color: '#9d4edd',
+            align: 'center',
+            fontStyle: 'italic',
+            lineSpacing: 5
+        });
+        dedication.setOrigin(0.5);
+        this.menuContainer.add(dedication);
+
         // Controls hint
-        const controls = this.scene.add.text(640, 620,
+        const controls = this.scene.add.text(640, 610,
             'SPACE/UP: Jump | DOWN: Slide | P: Pause', {
             fontSize: '16px',
             fontFamily: 'Courier New, monospace',
@@ -108,10 +121,21 @@ class UI {
         controls.setOrigin(0.5);
         this.menuContainer.add(controls);
 
-        // Credits
-        const credits = this.scene.add.text(640, 680,
-            'Created with Phaser 3 | Music: Suno AI', {
-            fontSize: '14px',
+        // Creator credits with year (prominent)
+        const creator = this.scene.add.text(640, 655,
+            'Created by the almighty Tasso Kala-e-Jakis • 2025', {
+            fontSize: '16px',
+            fontFamily: 'Courier New, monospace',
+            color: '#00ffff',
+            fontStyle: 'bold'
+        });
+        creator.setOrigin(0.5);
+        this.menuContainer.add(creator);
+
+        // Tech credits (smaller, less prominent)
+        const credits = this.scene.add.text(640, 690,
+            'Phaser 3 | Music: Suno AI', {
+            fontSize: '12px',
             fontFamily: 'Courier New, monospace',
             color: '#666666'
         });
@@ -267,7 +291,7 @@ class UI {
         this.gameOverContainer.add(menuButton);
 
         // Leaderboard
-        this.leaderboardText = this.scene.add.text(640, 600, '', {
+        this.leaderboardText = this.scene.add.text(640, 580, '', {
             fontSize: '18px',
             fontFamily: 'Courier New, monospace',
             color: '#9d4edd',
@@ -275,6 +299,16 @@ class UI {
         });
         this.leaderboardText.setOrigin(0.5);
         this.gameOverContainer.add(this.leaderboardText);
+
+        // Creator credits on game over screen
+        const gameOverCredits = this.scene.add.text(640, 670,
+            'by Tasso Kala-e-Jakis • 2025', {
+            fontSize: '14px',
+            fontFamily: 'Courier New, monospace',
+            color: '#00ffff'
+        });
+        gameOverCredits.setOrigin(0.5);
+        this.gameOverContainer.add(gameOverCredits);
 
         this.gameOverContainer.setVisible(false);
     }
