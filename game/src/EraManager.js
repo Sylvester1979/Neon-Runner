@@ -616,11 +616,11 @@ class EraManager {
             g.fillStyle(0x2a1440, 0.8);
         }
 
-        // Mid-ground city with detailed buildings
-        for (let i = 0; i < 12; i++) {
-            const x = (i * 140 + this.mgScrollX) % 1600 - 150;
+        // Mid-ground city with detailed buildings (increased from 12 to 18)
+        for (let i = 0; i < 18; i++) {
+            const x = (i * 100 + this.mgScrollX) % 2000 - 150;
             const height = 220 + (i % 4) * 55;
-            const width = 95 + (i % 3) * 20;
+            const width = 75 + (i % 3) * 20;
 
             // Building body
             mg.fillStyle(0x1a0a2e, 1);
@@ -655,6 +655,57 @@ class EraManager {
             // Rooftop lights
             mg.fillStyle(0xFF0000, 0.7 + Math.sin(this.animationTimer * 5 + i) * 0.3);
             mg.fillCircle(x + width/2, 600 - height - 5, 3);
+        }
+
+        // Flying vehicles (hovercars) - adds life to the scene
+        for (let i = 0; i < 4; i++) {
+            const vx = (i * 400 + this.animationTimer * 150 + i * 80) % 1600 - 200;
+            const vy = 250 + (i % 2) * 100 + Math.sin(this.animationTimer * 2 + i) * 15;
+
+            // Vehicle body
+            mg.fillStyle(0x7209B7, 0.8);
+            mg.fillRect(vx, vy, 32, 14);
+
+            // Glowing headlights
+            const headlightPulse = Math.sin(this.animationTimer * 8 + i) * 0.3 + 0.7;
+            mg.fillStyle(0x00FFFF, headlightPulse);
+            mg.fillCircle(vx + 30, vy + 7, 4);
+
+            // Light trail
+            mg.fillStyle(0xFF00FF, 0.3);
+            mg.fillRect(vx - 20, vy + 5, 20, 4);
+        }
+
+        // Holographic billboards/advertisements
+        for (let i = 0; i < 3; i++) {
+            const bx = (i * 450 + this.mgScrollX * 0.7) % 1500 - 150;
+            const by = 300 + (i % 2) * 80;
+
+            // Billboard frame
+            mg.lineStyle(2, 0x9D4EDD, 0.6);
+            mg.strokeRect(bx, by, 80, 45);
+
+            // Holographic content (animated scan lines)
+            const scanPhase = Math.floor(this.animationTimer * 6 + i) % 8;
+            for (let sy = 0; sy < 45; sy += 6) {
+                const scanAlpha = sy === scanPhase * 6 ? 0.9 : 0.3;
+                mg.fillStyle(i % 2 === 0 ? 0x00FFFF : 0xFF00FF, scanAlpha);
+                mg.fillRect(bx + 2, by + sy, 76, 4);
+            }
+        }
+
+        // Atmospheric lighting beams from buildings
+        for (let i = 0; i < 5; i++) {
+            const lx = (i * 280 + this.bgScrollX * 0.3) % 1400 - 100;
+            const beamAlpha = (Math.sin(this.animationTimer * 1.5 + i) * 0.15 + 0.15);
+
+            mg.fillStyle(0x7209B7, beamAlpha);
+            // Vertical light beam
+            mg.fillRect(lx, 200, 8, 250);
+
+            // Beam glow
+            mg.fillStyle(0xFF00FF, beamAlpha * 0.5);
+            mg.fillRect(lx - 2, 200, 12, 250);
         }
 
         // Ground with wet reflection effect
