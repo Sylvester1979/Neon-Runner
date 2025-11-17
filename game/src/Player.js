@@ -136,10 +136,19 @@ class Player {
 
         // Ground collision
         if (this.y >= this.groundY) {
+            // Check if player just landed (was in air, now grounded)
+            const wasGrounded = this.isGrounded;
+
             this.y = this.groundY;
             this.velocityY = 0;
             this.isGrounded = true;
             this.hasDoubleJump = false;
+
+            // Landing feedback (only if player was in air)
+            if (!wasGrounded) {
+                this.particleSystem.createLandingParticles(this.x, this.y + this.getHeight() / 2);
+                this.audioManager.playSFX('landing');
+            }
         }
 
         // Update container position
@@ -200,8 +209,8 @@ class Player {
         const height = this.getHeight();
         const width = this.width;
 
-        // Add flashing effect when invincible
-        if (this.isInvincible && Math.floor(Date.now() / 100) % 2 === 0) {
+        // Add flashing effect when invincible (use animation timer instead of Date.now())
+        if (this.isInvincible && Math.floor(this.animationTimer * 10) % 2 === 0) {
             return; // Skip drawing to create flashing effect
         }
 
@@ -269,8 +278,8 @@ class Player {
         const colors = [0x7209B7, 0x9D4EDD, 0x00FFFF, 0xFF00FF];
         const frame = this.animationFrame;
 
-        // Outer glow (pulsing)
-        const glowPulse = Math.sin(Date.now() / 200) * 0.2 + 0.6;
+        // Outer glow (pulsing) - use animation timer instead of Date.now()
+        const glowPulse = Math.sin(this.animationTimer * 5) * 0.2 + 0.6;
         this.graphics.lineStyle(4, colors[3], glowPulse * 0.4);
         this.graphics.strokeRect(-width/2, -height/2, width, height * 0.5 + 8);
 
@@ -330,7 +339,7 @@ class Player {
      */
     drawNeon(width, height) {
         const frame = this.animationFrame;
-        const pulse = Math.sin(Date.now() / 150) * 0.3 + 0.7;
+        const pulse = Math.sin(this.animationTimer * 6.67) * 0.3 + 0.7; // Use animation timer instead of Date.now()
 
         // Outermost glow aura - reduced for better obstacle visibility
         this.graphics.fillStyle(0x00FFFF, 0.08 * pulse);

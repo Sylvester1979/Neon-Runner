@@ -116,7 +116,7 @@ class UI {
             'SPACE/UP: Jump | DOWN: Slide | P: Pause', {
             fontSize: '16px',
             fontFamily: 'Courier New, monospace',
-            color: '#888888'
+            color: '#CCCCCC'
         });
         controls.setOrigin(0.5);
         this.menuContainer.add(controls);
@@ -137,7 +137,7 @@ class UI {
             'Phaser 3 | Music: Suno AI', {
             fontSize: '12px',
             fontFamily: 'Courier New, monospace',
-            color: '#666666'
+            color: '#999999'
         });
         credits.setOrigin(0.5);
         this.menuContainer.add(credits);
@@ -195,7 +195,7 @@ class UI {
         this.speedText = this.scene.add.text(30, 650, 'SPEED: 400', {
             fontSize: '20px',
             fontFamily: 'Courier New, monospace',
-            color: '#888888'
+            color: '#CCCCCC'
         });
         this.hudContainer.add(this.speedText);
 
@@ -437,7 +437,7 @@ class UI {
         // Check for new high score
         const isNewHighScore = this.addHighScore(finalScore);
         if (isNewHighScore) {
-            this.newHighScoreText.setText('🏆 NEW HIGH SCORE! 🏆');
+            this.newHighScoreText.setText('★ NEW HIGH SCORE ★');
             this.newHighScoreText.setVisible(true);
 
             // Pulse animation

@@ -90,6 +90,9 @@ function create() {
         screenEffects = new ScreenEffects(this);
         console.log('✅ Screen effects created');
 
+        // Pass screen effects to obstacle manager
+        obstacleManager.setScreenEffects(screenEffects);
+
         // Create era manager
         eraManager = new EraManager(this, player, obstacleManager, particleSystem, audioManager, screenEffects);
         console.log('✅ Era manager created');
@@ -184,13 +187,8 @@ function updateGameplay(delta) {
     // Update player
     player.update(delta);
 
-    // Update obstacle manager
-    obstacleManager.update(delta);
-
-    // Update all obstacle animations
-    obstacleManager.obstacles.forEach(obstacle => {
-        obstacleManager.updateObstacleAnimation(obstacle, delta);
-    });
+    // Update obstacle manager (includes obstacle animations internally)
+    obstacleManager.update(delta, isPaused);
 
     // Update era manager
     eraManager.update(delta);
@@ -446,6 +444,21 @@ function setupDebug() {
     this.input.keyboard.on('keydown-M', () => {
         const enabled = audioManager.toggleAudio();
         console.log('Audio:', enabled ? 'ON' : 'OFF');
+    });
+
+    // SPACE: Retry game (on game over)
+    this.input.keyboard.on('keydown-SPACE', () => {
+        if (gameState === 'gameover') {
+            restartGame();
+        }
+    });
+
+    // ESC: Return to menu (on game over)
+    this.input.keyboard.on('keydown-ESC', () => {
+        if (gameState === 'gameover') {
+            returnToMenu();
+            ui.showMenu();
+        }
     });
 
     // Debug text

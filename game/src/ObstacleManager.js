@@ -42,6 +42,13 @@ class ObstacleManager {
     }
 
     /**
+     * Set screen effects reference
+     */
+    setScreenEffects(screenEffects) {
+        this.screenEffects = screenEffects;
+    }
+
+    /**
      * Update obstacles and spawning
      */
     update(delta, isPaused = false) {
@@ -106,6 +113,16 @@ class ObstacleManager {
      * Spawn a new obstacle based on current era
      */
     spawnObstacle() {
+        // Check minimum distance from last obstacle (prevent impossible patterns)
+        const minDistance = 300; // Minimum pixels between obstacles
+        if (this.obstacles.length > 0) {
+            const rightmostObstacle = this.obstacles[this.obstacles.length - 1];
+            const distance = 1280 - (rightmostObstacle.x - rightmostObstacle.width);
+            if (distance < minDistance) {
+                return; // Skip spawning, too close
+            }
+        }
+
         let obstacleData;
 
         switch(this.currentEra) {
@@ -437,6 +454,12 @@ class ObstacleManager {
         this.audioManager.playSFX('collision');
         this.consecutiveDodges = 0;
         this.comboMultiplier = 1;
+
+        // Add impact feedback
+        this.scene.cameras.main.shake(400, 0.02);
+        if (this.screenEffects) {
+            this.screenEffects.flash(0xFF0000, 150);
+        }
     }
 
     /**

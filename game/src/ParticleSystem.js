@@ -35,6 +35,23 @@ class ParticleSystem {
     }
 
     /**
+     * Create landing particles (horizontal spread)
+     */
+    createLandingParticles(x, y) {
+        switch(this.currentEra) {
+            case '8bit':
+                this.create8BitLandingParticles(x, y);
+                break;
+            case '16bit':
+                this.create16BitLandingParticles(x, y);
+                break;
+            case 'neon':
+                this.createNeonLandingParticles(x, y);
+                break;
+        }
+    }
+
+    /**
      * 8-bit era particles - blocky pixels
      */
     create8BitJumpParticles(x, y) {
@@ -117,6 +134,94 @@ class ParticleSystem {
             particle.velocityX = vx;
             particle.velocityY = vy;
             particle.life = 1.0;
+            particle.initialAlpha = 1;
+
+            this.particles.push(particle);
+        }
+    }
+
+    /**
+     * 8-bit landing particles - horizontal dust clouds
+     */
+    create8BitLandingParticles(x, y) {
+        const colors = [0x0F380F, 0x306230, 0x8BAC0F];
+
+        for (let i = 0; i < 6; i++) {
+            const graphics = this.scene.add.graphics();
+            const color = Phaser.Utils.Array.GetRandom(colors);
+            graphics.fillStyle(color, 0.8);
+            graphics.fillRect(0, 0, 3, 3);
+
+            const particle = this.scene.add.container(x, y, [graphics]);
+            particle.setDepth(80);
+
+            // Horizontal spread (left and right)
+            const side = i < 3 ? -1 : 1;
+            const vx = side * Phaser.Math.Between(100, 200);
+            const vy = Phaser.Math.Between(-30, 10); // Mostly horizontal
+
+            particle.velocityX = vx;
+            particle.velocityY = vy;
+            particle.life = 0.3;
+
+            this.particles.push(particle);
+        }
+    }
+
+    /**
+     * 16-bit landing particles - sparkle dust
+     */
+    create16BitLandingParticles(x, y) {
+        const colors = [0x00FFFF, 0xFF00FF, 0x9D4EDD];
+
+        for (let i = 0; i < 8; i++) {
+            const graphics = this.scene.add.graphics();
+            const color = Phaser.Utils.Array.GetRandom(colors);
+            graphics.fillStyle(color, 1);
+            graphics.fillCircle(0, 0, 2);
+
+            const particle = this.scene.add.container(x, y, [graphics]);
+            particle.setDepth(80);
+
+            // Horizontal spread
+            const side = i < 4 ? -1 : 1;
+            const vx = side * Phaser.Math.Between(120, 220);
+            const vy = Phaser.Math.Between(-40, 5);
+
+            particle.velocityX = vx;
+            particle.velocityY = vy;
+            particle.life = 0.4;
+
+            this.particles.push(particle);
+        }
+    }
+
+    /**
+     * Neon landing particles - glowing shockwave
+     */
+    createNeonLandingParticles(x, y) {
+        const colors = [0x00FFFF, 0xFF00FF, 0xFFFF00];
+
+        for (let i = 0; i < 10; i++) {
+            const graphics = this.scene.add.graphics();
+            const color = Phaser.Utils.Array.GetRandom(colors);
+
+            graphics.fillStyle(color, 0.9);
+            graphics.fillCircle(0, 0, 3);
+            graphics.lineStyle(1, color, 0.7);
+            graphics.strokeCircle(0, 0, 5);
+
+            const particle = this.scene.add.container(x, y, [graphics]);
+            particle.setDepth(80);
+
+            // Strong horizontal spread
+            const side = i < 5 ? -1 : 1;
+            const vx = side * Phaser.Math.Between(150, 280);
+            const vy = Phaser.Math.Between(-50, 0);
+
+            particle.velocityX = vx;
+            particle.velocityY = vy;
+            particle.life = 0.5;
             particle.initialAlpha = 1;
 
             this.particles.push(particle);

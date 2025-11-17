@@ -91,6 +91,7 @@ class AudioManager {
     createProceduralSFX() {
         // These are backup sounds that always work
         this.sfx.jump = this.createBeep(440, 0.1);
+        this.sfx.landing = this.createBeep(330, 0.08);
         this.sfx.slide = this.createBeep(220, 0.15);
         this.sfx.collision = this.createBeep(110, 0.3);
         this.sfx.transition = this.createBeep(880, 0.2);
